@@ -1,68 +1,74 @@
 import { emberekLISTA } from "./adat.js";
-
-/*függvény*/ 
-function kiir(lista) {
-    for (let index = 0; index < lista.length; index++) {
-        const element = lista[index];
-        console.log(element);
-        console.log(lista[index]);
-    }
-}
+/* függvény - működik a hoisting - declaráció a hatóköre tetejére mászik */
 kiir(emberekLISTA);
-
-/*függvény kifejezés változónak adjuk értékül a függvényt nem működik a hoisting*/
-const kiir2 = function(lista) {
-    for (let index = 0; index < lista.length; index++) {
-        const element = lista[index];
-        console.log(element);
-        console.log(lista[index]);
-    }
+function kiir(lista) {
+  for (let index = 0; index < lista.length; index++) {
+    const element = lista[index];
+    console.log(element);
+    console.log(lista[index]);
+  }
 }
+/* függvény kifejezés változónak adjuk értékül a függvényt
+    nem működik a hoisting
+*/
+const kiir2 = function (lista) {
+  for (let index = 0; index < lista.length; index++) {
+    const element = lista[index];
+    console.log(element);
+    console.log(lista[index]);
+  }
+};
 kiir2(emberekLISTA);
 
 function kiir3(lista) {
-    console.log("forEACH csak a listához használható");
-
-    lista.forEach(function(ember,i){
-        console.log(ember,i);
-    });
+  console.log("forEach csak listához használható");
+  /*   lista.forEach((element, index) => {
+    console.log(element, index);
+  }); */
+  lista.forEach(function (ember, i) {
+    console.log(ember, i);
+  });
 }
+
 kiir3(emberekLISTA);
 
-/*20 évnél idősebbek*/ 
+/*  20 évnél idősebbek listázása */
 function idosebb20(lista) {
-    const idosebb20LISTA = lista.filter(function (ember) {
-        return ember.kor>20
-    })
+  const idosebb20LISTA = lista.filter(function (ember) {
+    return ember.kor > 20;
+  });
 
-    console.log(idosebb20LISTA);
+  console.log(idosebb20LISTA);
 }
 idosebb20(emberekLISTA);
 
-/* 20 évnél idősebb férfiak lista*/
-function ferfiak(lista){
-    const ferfiakLISTA = lista.filter(function (ember) {
-        return ember.nem && ember.kor > 20
-    })
-    console.log(ferfiakLISTA);
+/* 20 évnél idősebb  férfiak lista */
+function ferfiak(lista) {
+  const ferfiakLISTA = lista.filter(function (ember) {
+    return ember.nem && ember.kor > 20;
+  });
+  console.log(ferfiakLISTA);
 }
+
 ferfiak(emberekLISTA);
 
-
-/* lista rendezése kor szerint*/
+/*  lista rendezése kor szerint */
 function rendez(lista) {
-    lista.sort(function (e1,e2) {
-        return e1.kor - e2.kor;
-    })
-    console.log(lista);
+  console.log("RENDEZÉS ***************");
+  lista.sort(function (e1, e2) {
+    console.log(e1.kor, e2.kor, e2.kor - e1.kor);
+    return e2.kor - e1.kor;
+  });
+  console.log(lista);
 }
 rendez(emberekLISTA);
 
-/*véletlen sorrend kialakítása - elemek összekeverése*/ 
+/*  véletlen sorrendet kialakítása - elemek összekeverése */
 function kever(lista) {
-    lista.sort(function () {
-        return Math.random()-0.5;
-    })
-    console.log(lista);
+  console.log("Véletlen sorrend ***************");
+  lista.sort(function () {
+    return Math.random() - 0.5;
+  });
+  console.log(lista);
 }
 kever(emberekLISTA);

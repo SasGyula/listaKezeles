@@ -1,55 +1,54 @@
-import { emberekLISTA } from "./adat.js";
-import { htmlOsszeallit, megjelenit } from "./listaMegjelenit.js";
+//import { emberekLISTA } from "./adat.js";
 import { rendez, szures, torol } from "./adatKezelo.js";
-/*
-jelenítsük meg a listánkat egy táblázatban, majd a listát tudjuk rendezni pl név szerint, ha rákattintunk a táblázat fejlécére, akkor rendezze le a táblázat sorait, tudjunk szűrni név alapján, tudjunk új adatot hozzáadni a táblázathoz, tudjuk törölni a táblázat egy sorát
-*/
-/*Függvények és eljárások
-1. htmlOsszeallit(lista) -> txt | Összeállítja a táblázat html szerkezetét egy szöveges változóba
-2. megjelenit(txt) - megjelenítette egy adott html elemben a paraméterében kapott szöveget
-3. rendez(lista) -> rendezettLista | a paraméterében kapott listát név szerint megrendezi; a függvény akkor fut le, ha a táblázat név fejlécére kattintunk.
-4. adatHozzaadas(lista) -> kibővítettLista | összegyűjti az űrlapról az adatokat és összeállít belőlük egy objektumot, majd azt beleteszi a listába.; a függvémy akkor fut le ha rákattintunk a Hozzáad gombra.
-5. torol(lista, id) ->tLista | kitörli a listából az adott id-jű  elemet, amelyikre kattintottunk.
-Akkor fog lefutni, ha sor meletti töröl gombra kattintunk.
-6. szures(lista) -> szurtLista | a keresőmezőbe beirt szöveget keresi a lista objektumainak név mezőjében, mindez akkor fut le ha beirunk valamit a keresőmezőbe.
-*/
-let irany = 1 /* 1 növektvő rendezés, -1 csökkenő rendezés */
-function init(lista){
-    megjelenit(htmlOsszeallit(lista));
-    rendezEsemeny() 
-    torolEsemeny()
-}
-init(emberekLISTA)
-szuresEsemeny()
+import { deleteAdat, getAdat } from "./aszinkron.js";
+import { htmlOsszeallit, megjelenit } from "./listaMegjelenit.js";
+import { adatokListaba } from "./urlapkezelo.js";
 
+getAdat( "http://localhost:3000/emberekLISTA ", init)
 
-/*a függvény akkor fut le, ha a táblázat név fejlécére kattintunk.*/
-function rendezEsemeny(){
-    const nevELEM = $(".adatok table th").eq(0)
-    nevELEM.on("click", function(){
-    const rLista= rendez(emberekLISTA,irany)
-    console.log(rLista)
-    init(rLista)
-    irany*=(-1)
-})
-}
-/*akkor kell lefutnia amikor megváltozik a keresőmező*/
-function szuresEsemeny(){
-    const keresoElem=$("#szuro")
-    keresoElem.on("keyup", function(){
-        let keresoSzoveg = keresoElem.val()
-        const szLISTA = szures(emberekLISTA,keresoSzoveg);
-        console.log(szLISTA)
-        init(szLISTA);
-})
-}
-function torolEsemeny(){
-    const torolGOMB = $(".torol");
-    torolGOMB.on("click", function(event){
-    let id = event.target.id
-    const LISTA = torol(emberekLISTA, id);
-    init(LISTA)
-})
-}
-/*Akkor fog lefutni, ha sor meletti töröl gombra kattintunk.*/
+let irany = 1; /* 1 - növekvő rendezés , -1 csökkenő rendezés */
+//init(emberekLISTA);
+szuresEsemeny();
 
+function init(lista) {
+  console.log(lista)
+  megjelenit(htmlOsszeallit(lista));
+  //console.log(lista.emberekLISTA) végpont nélküli
+  //megjelenit(htmlOsszeallit(lista.emberekLISTA)); végpont nélküli
+  rendezEsemeny(lista);
+  torolEsemeny(lista);
+  adatokListaba(lista);
+}
+/* 
+a függvény akkor fut le, ha a táblázat név fejlécére kattintunk. */
+function rendezEsemeny(lista) {
+  const nevELEM = $(".adatok table th").eq(0);
+  nevELEM.on("click", function () {
+    const rLISTA = rendez(lista, irany);
+    console.log(rLISTA);
+    init(rLISTA);
+    irany *= -1;
+  });
+}
+function szuresEsemeny() {
+  /* akkor kell lefutnia, ha megváltozik a keresőmező tartalma */
+  const keresoELEM = $("#szuro");
+  keresoELEM.on("keyup", function () {
+    let keresoSzoveg = keresoELEM.val();
+    const szLISTA = szures(lista, keresoSzoveg);
+    init(szLISTA);
+  });
+}
+
+function torolEsemeny(lista) {
+  /* Akkor fog lefutni, ha sor melletti torol gombra kattintunk.  */
+  const torolGOMB = $(".torol");
+  torolGOMB.on("click", function (event) {
+    /*  event.target az az elem, amelyik kiváltotta az eseményt */
+    let id = event.target.id;
+    console.log(id);
+    //const LISTA = torol(lista, id);
+    //init(LISTA);
+    deleteAdat("http://localhost:3000/emberekLISTA", id)
+  });
+}
